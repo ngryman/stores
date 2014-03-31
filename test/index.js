@@ -6,5 +6,5 @@
 
 'use strict';
 
-require('./stores');
+//require('./stores');
 require('./store');

@@ -4,7 +4,7 @@
 
 <br>
 
-TODO.
+**stores** is a fast, reliable and smart caching system heavily based on streams.
 
 ## Installation
 

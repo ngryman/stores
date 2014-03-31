@@ -25,6 +25,11 @@ describe('stores middleware', function() {
 		Store.should.have.been.calledWithNew;
 	});
 
+	it('should accept a Store instance', function() {
+		var store = new stores.Store();
+		stores(store);
+	});
+
 	it('should accept the name of a Store type', function() {
 		stores.WootStore = sinon.spy();
 		stores('woot');

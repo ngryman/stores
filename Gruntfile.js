@@ -21,6 +21,11 @@ module.exports = function(grunt) {
 				'* Copyright (c) <%%= grunt.template.today("yyyy") %> <%%= pkg.author.name %>;' +
 				' Licensed <%%= pkg.license %> */\n'
 		},
+		env: {
+			test: {
+				NODE_ENV: 'development'
+			}
+		},
 		jshint: {
 			options: grunt.file.readJSON('.jshintrc'),
 			all: ['lib/*.js', 'test/*.js', 'Gruntfile.js']
@@ -28,12 +33,13 @@ module.exports = function(grunt) {
 		mochaTest: {
 			options: {
 				reporter: 'spec',
-				bail: true
+				bail: true,
+				slow: 2000
 			},
 			all: ['test/index.js']
 		}
 	});
 
 	// front tasks
-	grunt.registerTask('test', ['jshint', 'mochaTest']);
+	grunt.registerTask('test', ['env:test', 'jshint', 'mochaTest']);
 };

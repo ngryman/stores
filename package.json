@@ -11,17 +11,20 @@
     "url": "https://github.com/ngryman/reading-time.git"
   },
   "keywords": [
-    "read",
-    "time",
-    "read time",
-    "reading time",
-    "medium",
-    "words per minute"
+    "cache",
+    "express",
+    "express cache",
+    "smart cache",
+    "caching system",
+    "cache stempede",
+    "cache miss storm",
+    "cache streams"
   ],
   "author": "Nicolas Gryman <ngryman@gmail.com> (http://ngryman.sh)",
   "license": "MIT",
   "dependencies": {
-    "curry": "~1.2.0"
+    "curry": "~1.2.0",
+    "graceful-fs-stream": "0.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -34,6 +37,7 @@
     "sinon-chai": "~2.5.0",
     "express": "~3.5.1",
     "supertest": "~0.10.0",
-    "slow-stream": "0.0.4"
+    "slow-stream": "0.0.4",
+    "grunt-env": "~0.4.1"
   }
 }
