@@ -6,5 +6,6 @@
 
 'use strict';
 
-//require('./stores');
-require('./store');
+require('./stores');
+require('./store/store');
+require('./store/file');

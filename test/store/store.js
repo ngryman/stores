@@ -10,7 +10,7 @@
 /**
  * Module dependencies.
  */
-var stores = require('..'),
+var stores = require('../..'),
 	Store = stores.Store,
 	Bucket = stores.Bucket,
 	Readable = require('stream').Readable,
@@ -33,7 +33,7 @@ chai.use(require('sinon-chai'));
  * Test constants.
  */
 
-var fixturesPath = path.join(__dirname, 'fixtures'),
+var fixturesPath = path.join(__dirname, '..', 'fixtures'),
 	cachePath = path.join(fixturesPath, 'cache'),
 	proseText = fs.readFileSync(path.join(fixturesPath, 'prose.html'), 'utf8');
 
@@ -149,16 +149,16 @@ var rmdir = curry(function(dir, done) {
 		var filename = path.join(dir, list[i]);
 		var stat = fs.statSync(filename);
 
-		if (stat.isDirectory()) {
-			// rmdir recursively
-			rmdir(filename);
-		}
-		else {
-			// rm filename
+		if (stat.isDirectory())
+		// rmdir recursively
+			rmdir(filename, null);
+		else
+		// rm filename
 			fs.unlinkSync(filename);
-		}
 	}
-	done();
+
+	if (done) return done();
+	fs.rmdirSync(dir);
 });
 
 /**
