@@ -1,14 +1,14 @@
 {
   "name": "stores",
-  "version": "0.0.1",
-  "description": "Medium's like reading time estimation.",
+  "version": "0.0.2",
+  "description": "Fast, reliable and smart caching system heavily based on streams.",
   "main": "index.js",
   "scripts": {
     "test": "grunt test"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ngryman/reading-time.git"
+    "url": "https://github.com/ngryman/stores.git"
   },
   "keywords": [
     "cache",
