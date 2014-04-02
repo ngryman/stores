@@ -10,6 +10,8 @@
   <sup>Made with <a href="https://github.com/nosir/obelisk.js">obelisk.js</a>.</sup>
 </p>
 
+<br>
+
 **stores** is a fast, reliable, smart caching system heavily based on streams.
 
 **stores** deals transparently with [cache stampede] or *cache miss storm* for you.
@@ -51,8 +53,7 @@ It implicitly use the `FileStore` to cache the image to the filesystem.<br>
 
 To implement a custom store, you have to inherit from the `Store` object.
 
-This object provides two methods, `_get` and `_lock` that are respectively needed to fetch the resource from the cache
-or to lock a new cache *bucket*. A cache bucket can be seen as the physical place where your cached resource will be
+This object provides two methods, `_get` and `_lock` that are respectively needed to fetch the original resource or to lock a new cache *bucket*. A cache bucket can be seen as the physical location where your cached resource will be
 stored. It can be a file, a memory chunk, a REDIS key, a S3 bucket, or whatever you want.
 
 ## Author
