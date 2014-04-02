@@ -331,18 +331,29 @@ describe('store', function() {
 
 	describe('events', function() {
 
-		it('should emit a miss event', function(done) {
-			var store = new TestStore(), called = false;
+		it('should emit a miss/cache event', function(done) {
+			var store = new TestStore(),
+				miss = false,
+				cache = false;
+
 			store.on('miss', function(req, bucket) {
 				req.should.exist;
 				bucket.should.be.instanceOf(Bucket);
-				called = true;
+				miss = true;
+			}).on('cache', function(req, bucket) {
+				req.should.exist;
+				bucket.should.be.instanceOf(Bucket);
+				cache = true;
 			});
 
 			getMiddleware('/prose.html', store).expect(proseText, function(err, res) {
-				if (err) return done(err);
-				called.should.be.true;
-				done();
+				// ensures every event is fired
+				setTimeout(function() {
+					if (err) return done(err);
+					miss.should.be.true;
+					cache.should.be.true;
+					done();
+				}, 50);
 			});
 		});
 
