@@ -41,13 +41,122 @@ app.get(/\.(?:jpg|png|gif)$/, stores('file', function(req, slot, next) {
 });
 ```
 
-This ensures that you only process a given image **once**, and serve the cached version to all others.<br>
+This code ensures that you only process a given image **once**, and serve the cached version to all others.<br>
 It implicitly use the `FileStore` to cache the image to the filesystem.<br>
-`slot` is a stream pointing to a cache *bucket* that the `FileStore` has automatically created.
+`slot` represents a stream pointing to a cache *bucket* that the `FileStore` has automatically created.
 
-***(Rest of the doc incoming!)***
+### `stores(store, [options], [fetch])`
 
-### `stores` middleware
+This provided middleware allows you to configure a store globally.
+
+#### `store`
+
+This mandatory argument can be:
+ - a `string` that defines which type of store you want to use (for now only `file`).
+ - an existing `Store` instance.
+ - a `constructor` that inherits from `Store`.
+
+```javascript
+stores('file');
+stores(new FileStore());
+stores(FileStore);
+```
+
+Note that you can register [custom stores] and then use the `string` flavor:
+```javascript
+stores.MyPreciousStore = MyPreciousStore;
+stores('myPrecious');
+```
+
+#### `options`
+
+Optional, `options` will configure the store. All stores accepts those values:
+ - `maxPending`: *(default: 100)*, defines how many requests can be enqueued while a resource is being cached (see [hit hot]).
+ - `writesRetries`: *(default: 3)*, defines how many times the store will try to write to a cache bucket that fails (see [sealed buckets].
+
+```javascript
+stores('file', { maxPending: Infinity, writesRetries: 0 });
+```
+
+Notes that each implementation can add additional values for their specific needs (see [file store options]).
+
+#### `fetch(req, slot, next)`
+
+Optional, this callback allows the store to fetch missing data and store it. It is called on a cache miss, with the following arguments:
+ - `req`: the network request.
+ - `slot`: a `Writable` stream that will hold cache data. It is allocated by the store. You must `pipe` to it.
+ - `next`: next middleware in the stack. It's useful if something went wrong and you want to abort the request asap.
+
+```javascript
+stores('file', function(req, slot, next) {
+	var stream = createSomeStream(req);
+	stream.pipe(slot);
+});
+```
+
+Note that if you don't specify a `fetch` callback here, then you must specify it in some other way.
+
+### `Store` object
+
+As seen previously, you can instanciate a store by yourself for some additional flexibility. As a user, you only are interested in the public `api`.
+
+#### `Store([options])`
+
+Creates a store with the given options.
+```javascript
+var store = new FileStore({ writesRetries: 0 });
+```
+
+#### `Store#fetch(fetch)`
+
+This tells the store how to fetch a missing resource from the cache. If you haven't specified it via the `stores` middleware, you still can do it here globally.
+
+```javascript
+var store = new FileStore();
+store.fetch(function(req, slot, next) {
+	var stream = createSomeStream(req);
+	stream.pipe(slot);
+});
+```
+
+The main advantage of specifying it this way, is that you can change the `fetch` method whenever you want during the lifecycle of your application.
+
+#### `Store#get(req, res, next, [fetch])`
+
+This is the most important method. It will try to fetch a resource from the cache or call `fetch` callback.<br>
+It can be useful if for some reason, you prefer using `stores` in one of your existing route of middleware, or when you want to add additional logic before using it.
+
+```javascript
+var store = new FileStore();
+
+app.get(/\.(?:jpg|png|gif)$/, function(req, res, next) {
+	// don't process/cache tuhmbnails
+	if (~req.url.indexOf('thumb')) {
+		fs.createReadStream(path.join(root, req.url)).pipe(res);
+		return;
+	}
+
+	// process others
+	store.get(req, res, next, function(req, slot, next) {
+		processImage(req).stream().pipe(slot);
+	});
+});
+```
+
+Note that if you already have specified a fetch method globally, you can then omit the `fetch` argument:
+```javascript
+app.get(/\.(?:jpg|png|gif)$/, function(req, res, next) {
+	store.get(req, res, next);
+});
+```
+
+[custom stores]: #custom-stores
+
+## Graceful filesystem streams
+
+You also need be aware that `stores` uses [graceful-fs-stream] (`gfs`) as dependency. `gfs` slightly changes the behavior of `fs.createReadStream` and `fs.createWriteStream` by opening / creating the underlying file on **first read or write**. The main advantage is that instead of throwing an error, those function will emit an `error` event instead.
+
+If you do want to still use standard versions, you can still use `fs._createReadStream` or `fs._createWriteStream`.
 
 ## Custom stores
 
@@ -55,6 +164,8 @@ To implement a custom store, you have to inherit from the `Store` object.
 
 This object provides two methods, `_get` and `_lock` that are respectively needed to fetch the original resource or to lock a new cache *bucket*. A cache bucket can be seen as the physical location where your cached resource will be
 stored. It can be a file, a memory chunk, a REDIS key, a S3 bucket, or whatever you want.
+
+### `Store` object
 
 ## Author
 
