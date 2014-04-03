@@ -353,7 +353,7 @@ describe('store', function() {
 					miss.should.be.true;
 					cache.should.be.true;
 					done();
-				}, 50);
+				}, 100);
 			});
 		});
 
@@ -432,7 +432,7 @@ describe('store', function() {
 					lock.should.equal(1);
 					unlock.should.equal(1);
 					done();
-				}, 50);
+				}, 100);
 			});
 
 			test(1, 'miss', sync3);
@@ -501,19 +501,20 @@ describe('store', function() {
 
 			var app = createApp(store);
 			var test = fire(app, '/prose.html', proseText);
-			var sync2 = sync(2, function(err) {
-				if (err) return done(err);
-				newB.should.equal(1);
-				getB.should.equal(2);
-				release.should.equal(3);
-				destroy.should.equal(1);
-				done();
+			var sync3 = sync(3, function(err) {
+				// ensures every event is fired
+				setTimeout(function() {
+					if (err) return done(err);
+					newB.should.equal(1);
+					getB.should.equal(2);
+					release.should.equal(3);
+					destroy.should.equal(1);
+					done();
+				}, 100);
 			});
 
-			test(1, 'miss', function(err) {
-				if (err) return done(err);
-				test(2, 'hit', sync2);
-			});
+			test(1, 'miss', sync3);
+			test(2, 'hit', sync3);
 		});
 
 	});
