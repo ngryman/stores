@@ -57,7 +57,7 @@ describe('stores middleware', function() {
 		Store.prototype.fetch = sinon.spy();
 		var fetch = function() {};
 		var options = { woot: 'store' };
-		stores(Store, fetch, options);
+		stores(Store, options, fetch);
 		Store.should.have.been.calledWithNew;
 		Store.should.have.been.calledWith(options);
 		Store.prototype.fetch.should.have.been.calledWith(fetch);
