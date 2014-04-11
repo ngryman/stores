@@ -78,13 +78,13 @@ Optional, `options` will configure the store. All stores accepts those values:
 stores('file', { maxPending: Infinity, writesRetries: 0 });
 ```
 
-Notes that each implementation can add additional values for their specific needs (see [file store options]).
+Note that each implementation can add additional values for their specific needs (i.e. [file store options]).
 
 #### `fetch(req, slot, next)`
 
 Optional, this callback allows the store to fetch missing data and store it. It is called on a cache miss, with the following arguments:
  - `req`: the network request.
- - `slot`: a `Writable` stream that will hold cache data. It is allocated by the store. You must `pipe` to it.
+ - `slot`: a `Writable` stream that will persist data to cache. It is allocated by the store. You must `pipe` to it.
  - `next`: next middleware in the stack. It's useful if something went wrong and you want to abort the request asap.
 
 ```javascript
@@ -94,7 +94,7 @@ stores('file', function(req, slot, next) {
 });
 ```
 
-Note that if you don't specify a `fetch` callback here, then you must specify it in some other way.
+Note that if you don't specify a `fetch` callback here, then you must specify it via `Store#fetch` or `Store#get`.
 
 ### `Store` object
 
@@ -152,20 +152,42 @@ app.get(/\.(?:jpg|png|gif)$/, function(req, res, next) {
 
 [custom stores]: #custom-stores
 
-## Graceful filesystem streams
+## Available stores
 
-You also need be aware that `stores` uses [graceful-fs-stream] (`gfs`) as dependency. `gfs` slightly changes the behavior of `fs.createReadStream` and `fs.createWriteStream` by opening / creating the underlying file on **first read or write**. The main advantage is that instead of throwing an error, those function will emit an `error` event instead.
+### `FileStore`
 
-If you do want to still use standard versions, you can still use `fs._createReadStream` or `fs._createWriteStream`.
+As you may already guess, it uses the filesystem as storage medium. It creates a [balanced directory structure] which ensures performances are always the best, even if your cache is growing fast.
+
+Basically each cache entry is associated with a strong hash (`sha256`). This hash is used to create the path to the cache file. This path is composed of multiple subdirectories in order to ensure there is not more that 256 entries in each directory.
+
+#### `FileStore([options])`
+
+Creates a filesystem store with the given options. Available options are [common ones] plus the following ones:
+ - `root`: *(default: current directory)*, root directory of the cache structure.
+ - `depth`: *(default: 4)*, number of subdirectories less 1.
+
+```javascript
+var store = new FileStore({ root: '/var/cache/www', depth: 2});
+```
+
+[common ones]: #options
+
+[balanced directory structure]: http://michaelandrews.typepad.com/the_technical_times/2009/10/creating-a-hashed-directory-structure.html
 
 ## Custom stores
 
 To implement a custom store, you have to inherit from the `Store` object.
 
-This object provides two methods, `_get` and `_lock` that are respectively needed to fetch the original resource or to lock a new cache *bucket*. A cache bucket can be seen as the physical location where your cached resource will be
+This object provides two methods, `_get` and `_lock` that are respectively needed to fetch the original resource and to lock a new cache *bucket*. A cache bucket can be seen as the physical location where your cached resource will be
 stored. It can be a file, a memory chunk, a REDIS key, a S3 bucket, or whatever you want.
 
 ### `Store` object
+
+## Graceful filesystem streams
+
+You also need be aware that `stores` uses [graceful-fs-stream] (`gfs`) as dependency. `gfs` slightly changes the behavior of `fs.createReadStream` and `fs.createWriteStream` by opening / creating the underlying file on **first read or write**. The main advantage is that instead of throwing an error, those function will emit an `error` event instead.
+
+If you do still want to use standard versions in your project, use `fs._createReadStream` or `fs._createWriteStream`.
 
 ## Author
 
