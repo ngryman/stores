@@ -1,6 +1,6 @@
 {
   "name": "stores",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Fast, reliable and smart caching system heavily based on streams.",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "curry": "~1.2.0",
     "graceful-fs-stream": "0.0.1",
     "mkdirp": "^0.5.1",
-	"on-headers": "^1.0.1"
+    "on-headers": "^1.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
