@@ -58,7 +58,7 @@ function createApp(middleware) {
 
 	// avoids logging error
 	app.use(function(err, req, res, next) {
-		res.send(err.status);
+		res.sendStatus(err.status);
 	});
 
 	return app;
