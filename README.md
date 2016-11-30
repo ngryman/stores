@@ -1,6 +1,6 @@
 # stores
 
-[![NPM Version][npm-badge]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][gemnasium-image]][gemnasium-url] [![Gittip][gittip-image]][gittip-url]
+[![Build Status][travis-image]][travis-url]
 
 <br>
 
@@ -195,11 +195,5 @@ If you do still want to use standard versions in your project, use `fs._createRe
 |---|
 | [Nicolas Gryman](http://ngryman.sh) |
 
-[npm-badge]: http://img.shields.io/npm/v/stores.svg
-[npm-url]: https://www.npmjs.org/package/stores
 [travis-image]: http://img.shields.io/travis/ngryman/stores.svg
 [travis-url]: https://travis-ci.org/ngryman/stores
-[gemnasium-image]: http://img.shields.io/gemnasium/ngryman/stores.png
-[gemnasium-url]: https://gemnasium.com/ngryman/stores
-[gittip-image]: http://img.shields.io/gittip/ngryman.svg
-[gittip-url]: https://www.gittip.com/ngryman
