@@ -32,7 +32,7 @@ npm install stores --save --production
 
 ## Usage
 
-You're in hurry, I can understand that.<br>
+You're in a hurry, I can understand that.<br>
 Here is an example on how you can cache processed images easily:
 
 ```javascript
@@ -42,8 +42,8 @@ app.get(/\.(?:jpg|png|gif)$/, stores('file', function(req, slot, next) {
 ```
 
 This code ensures that you only process a given image **once**, and serve the cached version to all others.<br>
-It implicitly use the `FileStore` to cache the image to the filesystem.<br>
-`slot` represents a stream pointing to a cache *bucket* that the `FileStore` has automatically created.
+It implicitly uses the `FileStore` to cache the image to the filesystem.<br>
+A `slot` represents a stream pointing to a cache *bucket* that the `FileStore` has automatically created.
 
 ### `stores(store, [options], [fetch])`
 
@@ -70,7 +70,7 @@ stores('myPrecious');
 
 #### `options`
 
-Optional, `options` will configure the store. All stores accepts those values:
+Optional, `options` will configure the store. All stores accept those values:
  - `maxPending`: *(default: 100)*, defines how many requests can be enqueued while a resource is being cached (see [hit hot]).
  - `writesRetries`: *(default: 3)*, defines how many times the store will try to write to a cache bucket that fails (see [sealed buckets].
 
@@ -119,7 +119,7 @@ store.fetch(function(req, slot, next) {
 });
 ```
 
-The main advantage of specifying it this way, is that you can change the `fetch` method whenever you want during the lifecycle of your application.
+The main advantage of doing it this way, is that you can change the `fetch` method whenever you want during the lifecycle of your application.
 
 #### `Store#get(req, res, next, [fetch])`
 
@@ -156,7 +156,7 @@ app.get(/\.(?:jpg|png|gif)$/, function(req, res, next) {
 
 ### `FileStore`
 
-As you may already guess, it uses the filesystem as storage medium. It creates a [balanced directory structure] which ensures performances are always the best, even if your cache is growing fast.
+As you may already guess, it uses the filesystem as storage medium. It creates a [balanced directory structure] which ensures performance is always the best, even if your cache is growing fast.
 
 Basically each cache entry is associated with a strong hash (`sha256`). This hash is used to create the path to the cache file. This path is composed of multiple subdirectories in order to ensure there is not more that 256 entries in each directory.
 
