@@ -1,5 +1,7 @@
 # stores
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ngryman/stores.svg)](https://greenkeeper.io/)
+
 [![Build Status][travis-image]][travis-url]
 
 <br>
